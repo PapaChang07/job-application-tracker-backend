@@ -21,11 +21,23 @@ if (process.env.NODE_ENV === "production") {
 
 const PORT = process.env.PORT || 5000;
 
+// CORS - allow Vercel frontend and localhost for dev
+const allowedOrigins = [
+  "http://localhost:5173", // dev frontend
+  "https://job-application-tracker-frontend-ve.vercel.app" // prod frontend
+];
+
 app.use(cors({
-  origin: "https://job-application-tracker-frontend-ve.vercel.app",
+  origin: function(origin, callback) {
+    // allow requests with no origin like Postman or curl
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
   credentials: true,
   optionsSuccessStatus: 200
-
 }));
 
 app.use(express.json());
