@@ -6,7 +6,19 @@ import { PrismaClient } from '@prisma/client';
 dotenv.config();
 
 const app = express();
-const prisma = new PrismaClient();
+
+let prisma;
+
+if (process.env.NODE_ENV === "production") {
+  prisma = new PrismaClient();
+} else {
+  // Prevent multiple instances in dev/hot reload
+  if (!global.prisma) {
+    global.prisma = new PrismaClient();
+  }
+  prisma = global.prisma;
+}
+
 const PORT = process.env.PORT || 5000;
 
 app.use(cors({
