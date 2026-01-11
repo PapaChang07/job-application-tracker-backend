@@ -4,6 +4,7 @@ import dotenv from 'dotenv';
 import { PrismaClient } from '@prisma/client';
 
 dotenv.config();
+
 const app = express();
 const prisma = new PrismaClient();
 const PORT = process.env.PORT || 5000;
@@ -59,4 +60,13 @@ app.delete('/jobs/:id', async (req, res) => {
   res.json({ message: 'Job deleted' });
 });
 
+app.get("/health", (req, res) => {
+  res.json({ status: "ok" });
+});
+
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+
+process.on("SIGTERM", async () => {
+  await prisma.$disconnect();
+  process.exit(0);
+});
