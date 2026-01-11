@@ -10,8 +10,10 @@ const prisma = new PrismaClient();
 const PORT = process.env.PORT || 5000;
 
 app.use(cors({
-  origin: ["https://job-application-tracker-frontend-ve.vercel.app"],
-  credentials: true
+  origin: "https://job-application-tracker-frontend-ve.vercel.app",
+  credentials: true,
+  optionsSuccessStatus: 200
+
 }));
 
 app.use(express.json());
