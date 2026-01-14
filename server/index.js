@@ -24,7 +24,7 @@ const PORT = process.env.PORT || 5000;
 // CORS - allow Vercel frontend and localhost for dev
 const allowedOrigins = [
   "http://localhost:5173", // dev frontend
-  "https://job-application-tracker-frontend-ve.vercel.app" // prod frontend
+  "https://job-application-tracker-frontend-vercel-7nganep8j.vercel.app/" // prod frontend
 ];
 
 app.use(cors({
