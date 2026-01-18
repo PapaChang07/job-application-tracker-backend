@@ -27,8 +27,13 @@ const corsOptions = {
     // Allow non-browser requests (Postman, curl, Railway health checks)
     if (!origin) return callback(null, true);
 
+
     // Allow ALL Vercel deployments (preview + prod)
     if (origin.endsWith(".vercel.app")) {
+      return callback(null, true);
+    }
+    
+    if (origin.startsWith("chrome-extension://")) {
       return callback(null, true);
     }
 
