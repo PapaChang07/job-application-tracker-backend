@@ -55,21 +55,22 @@ app.use(express.json());
 // Get all jobs
 app.get("/jobs", async (req, res) => {
   console.log("🔹 GET /jobs hit"); // log whenever route is hit
-  try {
-    const jobs = await prisma.job.findMany({
-      orderBy: { date: "desc" },
-    });
-    console.log("Fetched jobs:", jobs);
-    res.json(jobs);
-  } catch (error) {
-    console.error("❌ Error fetching jobs:", error);
-    res.status(500).json({ error: error.message });
-  }
+  const jobs = await prisma.job.findMany({
+    orderBy: { date: "desc" },
+  });
+  console.log("Fetched jobs:", jobs);
+  res.json(jobs);
 });
 
 // Add a new job
 app.post('/jobs', async (req, res) => {
+  if (!req.body.company || !req.body.position ||!req.body.status ||!req.body.date) {
+    return res.status(400).json({
+      error: "Company, position, status, or date are required"
+    });
+  }
   const { company, position, status, notes, date } = req.body;
+  
   const job = await prisma.job.create({
     data: { company, position, status, notes, date: date ? new Date(date) : new Date() },
   });
@@ -97,6 +98,14 @@ app.delete('/jobs/:id', async (req, res) => {
 
 app.get("/health", (req, res) => {
   res.json({ status: "ok" });
+});
+
+app.use((err, req, res, next) => {
+  console.error(err);
+
+  res.status(err.status || 500).json({
+    error: err.message || "Internal Server Error"
+  });
 });
 
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
