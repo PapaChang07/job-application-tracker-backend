@@ -21,6 +21,9 @@ if (process.env.NODE_ENV === "production") {
 
 const PORT = process.env.PORT || 5000;
 
+const asyncHandler = (fn) => (req, res, next) =>
+  Promise.resolve(fn(req, res, next)).catch(next);
+
 // CORS - allow Vercel frontend and localhost for dev
 const corsOptions = {
   origin: function (origin, callback) {
@@ -57,17 +60,17 @@ app.use(express.json());
 // Routes
 
 // Get all jobs
-app.get("/jobs", async (req, res) => {
+app.get("/jobs", asyncHandler(async (req, res) => {
   console.log("🔹 GET /jobs hit"); // log whenever route is hit
   const jobs = await prisma.job.findMany({
     orderBy: { date: "desc" },
   });
   console.log("Fetched jobs:", jobs);
   res.json(jobs);
-});
+}));
 
 // Add a new job
-app.post('/jobs', async (req, res) => {
+app.post('/jobs', asyncHandler(async (req, res) => {
   if (!req.body.company || !req.body.position ||!req.body.status ||!req.body.date) {
     return res.status(400).json({
       error: "Company, position, status, or date are required"
@@ -79,10 +82,10 @@ app.post('/jobs', async (req, res) => {
     data: { company, position, status, notes, date: date ? new Date(date) : new Date() },
   });
   res.json(job);
-});
+}));
 
 // Update a job
-app.put('/jobs/:id', async (req, res) => {
+app.put('/jobs/:id', asyncHandler(async (req, res) => {
   console.log(req.params);
   const { id } = req.params;
   const { company, position, status, notes, date } = req.body;
@@ -91,14 +94,14 @@ app.put('/jobs/:id', async (req, res) => {
     data: { company, position, status, notes, date: date ? new Date(date) : undefined},
   });
   res.json(job);
-});
+}));
 
 // Delete a job
-app.delete('/jobs/:id', async (req, res) => {
+app.delete('/jobs/:id', asyncHandler(async (req, res) => {
   const { id } = req.params;
   await prisma.job.delete({ where: { id: parseInt(id) } });
   res.json({ message: 'Job deleted' });
-});
+}));
 
 app.get("/health", (req, res) => {
   res.json({ status: "ok" });
