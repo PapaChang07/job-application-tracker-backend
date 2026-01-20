@@ -1,6 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
+
 import { PrismaClient } from '@prisma/client';
 
 dotenv.config();
@@ -55,7 +56,17 @@ app.use(cors(corsOptions));
 
 app.options("/", cors(corsOptions));
 
+app.use((req, res, next) => {
+  console.log("INCOMING:", req.method, req.url, "CT:", req.headers["content-type"]);
+  next();
+});
+
 app.use(express.json());
+
+app.use((err, req, res, next) => {
+  console.error("MIDDLEWARE ERROR:", err);
+  res.status(err.status || 500).send(err.message || "Server error");
+});
 
 // Routes
 
