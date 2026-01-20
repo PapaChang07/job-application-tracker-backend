@@ -37,6 +37,10 @@ const corsOptions = {
       return callback(null, true);
     }
 
+    if (origin === "http://localhost:3000") return callback(null, true);
+    
+    if (origin === "http://localhost:5173") return callback(null, true); // if using Vite
+
     // Otherwise block
     return callback(new Error("Not allowed by CORS"));
   },
