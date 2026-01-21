@@ -87,15 +87,6 @@ app.post('/jobs', asyncHandler(async (req, res) => {
       error: "Company, position, status, or date are required"
     });
   }
-  console.log("✅ HIT /jobs");
-  console.log("BODY:", req.body);
-  console.log("TYPES:", {
-    company: typeof req.body?.company,
-    position: typeof req.body?.position,
-    status: typeof req.body?.status,
-    notes: typeof req.body?.notes,
-  });
-  return res.status(200).json({ ok: true, received: req.body });
   const { company, position, status, notes, date } = req.body;
   
   const job = await prisma.job.create({
