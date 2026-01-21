@@ -82,7 +82,7 @@ app.get("/jobs", asyncHandler(async (req, res) => {
 
 // Add a new job
 app.post('/jobs', asyncHandler(async (req, res) => {
-  if (!req.body.company || !req.body.position ||!req.body.status ||!req.body.date) {
+  if (!req.body.company || !req.body.position ||!req.body.status) {
     return res.status(400).json({
       error: "Company, position, status, or date are required"
     });
